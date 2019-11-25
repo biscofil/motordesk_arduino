@@ -45,6 +45,8 @@ void homePage()
 
 void ethernet_setup() {
 
+  Serial.begin(9600);
+
   if (ether.begin(sizeof Ethernet::buffer, mymac) == 0) {
 
     //Serial.println( "Failed to access Ethernet controller");
@@ -61,63 +63,80 @@ void ethernet_setup() {
 }
 
 void ethernet_loop() {
-  
+
   // wait for an incoming TCP packet, but ignore its contents
   word len = ether.packetReceive();
   word pos = ether.packetLoop(len);
-  
+
   if (pos) {
-   
+
     delay(1); // necessary for my system
     bfill = ether.tcpOffset();
     char *data = (char *) Ethernet::buffer + pos;
-    
+
     if (strncmp("GET /", data, 5) != 0) {
-      
+
       // Unsupported HTTP request
       // 304 or 501 response would be more appropriate
       bfill.emit_p(http_Unauthorized);
-      
-    }else {
-      
+
+    } else {
+
       data += 5;
-      
-      /*Serial.println("INIZIO DATA");
-         Serial.println(data);
-         Serial.println("FINE DATA");*/
-         
+
+
+      String str_data = String(data);
+      Serial.println(str_data);
+
       if (data[0] == ' ') {
-        
+
         // Return home page
         homePage();
-        
-      } else if (strncmp("?up=", data, 4) == 0) {
 
-        motor_up();
+      } else if (str_data.indexOf("d=") >= 0) {
 
-        /*String str_data = String(data);
-          int pos = str_data.indexOf("?hex=");
-          String hex = str_data.substring(pos + 5, pos + 11);
 
-          Serial.println(hex);
+        Serial.println("D paramter is present");
 
-          long number = (long) strtol( &hex[0], NULL, 16);
+        int mov_direction_pos = str_data.indexOf("d=");
+        char mov_direction = str_data[mov_direction_pos + 2];
 
-          col_x[0] = number >> 16;
-          col_x[1] = number >> 8 & 0xFF;
-          col_x[2] = number & 0xFF;*/
+
+        // sides
+
+        int side = 0;
+
+        if (str_data.indexOf("s=") >= 0) {
+          int mov_side_pos = str_data.indexOf("s=");
+          char mov_side = str_data[mov_side_pos + 2];
+
+          if(mov_side == 'b'){
+            // both
+            side = SIDE_BOTH;
+          }else if(mov_side == 'l'){
+            // left only
+            side = SIDE_LEFT;
+          }else if(mov_side == 'r'){
+            // right only
+            side = SIDE_RIGHT;
+          }
+          
+        }
+
+        if (mov_direction == 'u') {
+          motor_up(side);
+        } else if (mov_direction == 'd') {
+          motor_down(side);
+        }
 
         homePage();
-        
-      } else if (strncmp("?down=", data, 6) == 0) {
-        
-        motor_down();
+
 
       } else {
-        
+
         // Page not found
         bfill.emit_p(http_Unauthorized);
-        
+
       }
     }
 

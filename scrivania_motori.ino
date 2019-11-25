@@ -1,4 +1,8 @@
 
+const int SIDE_BOTH = 0;
+const int SIDE_LEFT = 1;
+const int SIDE_RIGHT = 2;
+
 void setAsReady(){
   
   digitalWrite(LED_BUILTIN, HIGH);

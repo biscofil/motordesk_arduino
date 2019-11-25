@@ -1,5 +1,3 @@
-const int mot_1_a = 2;
-const int mot_1_b = 3;
 
 const int mot_2_a = 4;
 const int mot_2_b = 5;
@@ -7,13 +5,7 @@ const int mot_2_b = 5;
 const int mot_3_a = 6;
 const int mot_3_b = 7;
 
-const int mot_4_a = 8;
-const int mot_4_b = 9;
-
 void motor_setup() {
-
-  pinMode(mot_1_a, OUTPUT);
-  pinMode(mot_1_b, OUTPUT);
 
   pinMode(mot_2_a, OUTPUT);
   pinMode(mot_2_b, OUTPUT);
@@ -21,18 +13,19 @@ void motor_setup() {
   pinMode(mot_3_a, OUTPUT);
   pinMode(mot_3_b, OUTPUT);
 
-  pinMode(mot_4_a, OUTPUT);
-  pinMode(mot_4_b, OUTPUT);
-
 }
 
 
-void motor_up() {
+void motor_up(int side) {
 
-  digitalWrite(mot_2_a, HIGH);
-  digitalWrite(mot_2_b, LOW);
-  digitalWrite(mot_3_a, HIGH);
-  digitalWrite(mot_3_b, LOW);
+  if (side == SIDE_BOTH || side == SIDE_LEFT) {
+    digitalWrite(mot_2_a, HIGH);
+    digitalWrite(mot_2_b, LOW);
+  }
+  if (side == SIDE_BOTH || side == SIDE_RIGHT) {
+    digitalWrite(mot_3_a, HIGH);
+    digitalWrite(mot_3_b, LOW);
+  }
 
   delay(1000);
 
@@ -44,12 +37,16 @@ void motor_up() {
 
 
 
-void motor_down() {
+void motor_down(int side) {
 
-  digitalWrite(mot_2_a, LOW);
-  digitalWrite(mot_2_b, HIGH);
-  digitalWrite(mot_3_a, LOW);
-  digitalWrite(mot_3_b, HIGH);
+  if (side == SIDE_BOTH || side == SIDE_LEFT) {
+    digitalWrite(mot_2_a, LOW);
+    digitalWrite(mot_2_b, HIGH);
+  }
+  if (side == SIDE_BOTH || side == SIDE_RIGHT) {
+    digitalWrite(mot_3_a, LOW);
+    digitalWrite(mot_3_b, HIGH);
+  }
 
   delay(1000);
 
@@ -62,11 +59,11 @@ void motor_down() {
 
 void motor_test() {
 
-  motor_up();
+  motor_up(SIDE_BOTH);
 
   delay(1000);
 
-  motor_down();
+  motor_down(SIDE_BOTH);
 
   delay(1000);
 }
