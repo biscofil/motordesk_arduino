@@ -45,7 +45,7 @@ void homePage()
 
 void ethernet_setup() {
 
-  Serial.begin(9600);
+  //Serial.begin(9600);
 
   if (ether.begin(sizeof Ethernet::buffer, mymac) == 0) {
 
@@ -70,9 +70,17 @@ void ethernet_loop() {
 
   if (pos) {
 
+    resetRequestDelayCount();
+
+    // DEBUG Serial.println(count_without_requests);
+    // DEBUG count_without_requests=0;
+
     delay(1); // necessary for my system
+
     bfill = ether.tcpOffset();
     char *data = (char *) Ethernet::buffer + pos;
+
+    // DEBUG Serial.println("REQUEST ARRIVED");
 
     if (strncmp("GET /", data, 5) != 0) {
 
@@ -84,9 +92,8 @@ void ethernet_loop() {
 
       data += 5;
 
-
       String str_data = String(data);
-      Serial.println(str_data);
+      //Serial.println(str_data);
 
       if (data[0] == ' ') {
 
@@ -95,12 +102,10 @@ void ethernet_loop() {
 
       } else if (str_data.indexOf("d=") >= 0) {
 
-
-        Serial.println("D paramter is present");
+        // direction
 
         int mov_direction_pos = str_data.indexOf("d=");
         char mov_direction = str_data[mov_direction_pos + 2];
-
 
         // sides
 
@@ -110,17 +115,17 @@ void ethernet_loop() {
           int mov_side_pos = str_data.indexOf("s=");
           char mov_side = str_data[mov_side_pos + 2];
 
-          if(mov_side == 'b'){
+          if (mov_side == 'b') {
             // both
             side = SIDE_BOTH;
-          }else if(mov_side == 'l'){
+          } else if (mov_side == 'l') {
             // left only
             side = SIDE_LEFT;
-          }else if(mov_side == 'r'){
+          } else if (mov_side == 'r') {
             // right only
             side = SIDE_RIGHT;
           }
-          
+
         }
 
         if (mov_direction == 'u') {

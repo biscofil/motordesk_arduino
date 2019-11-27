@@ -15,46 +15,38 @@ void motor_setup() {
 
 }
 
+void motor_stop() {
 
-void motor_up(int side) {
-
-  if (side == SIDE_BOTH || side == SIDE_LEFT) {
-    digitalWrite(mot_2_a, HIGH);
-    digitalWrite(mot_2_b, LOW);
-  }
-  if (side == SIDE_BOTH || side == SIDE_RIGHT) {
-    digitalWrite(mot_3_a, HIGH);
-    digitalWrite(mot_3_b, LOW);
-  }
-
-  delay(1000);
-
+  Serial.println("MOTOR STOP");
+  
   digitalWrite(mot_2_a, LOW);
   digitalWrite(mot_2_b, LOW);
+
   digitalWrite(mot_3_a, LOW);
   digitalWrite(mot_3_b, LOW);
 }
 
+void motor_up(int side) {
+
+  Serial.println("MOTOR UP");
+  
+  digitalWrite(mot_2_a, (side == SIDE_BOTH || side == SIDE_LEFT) ? HIGH : LOW);
+  digitalWrite(mot_2_b, LOW);
+
+  digitalWrite(mot_3_a, (side == SIDE_BOTH || side == SIDE_RIGHT) ? HIGH : LOW);
+  digitalWrite(mot_3_b, LOW);
+}
 
 
 void motor_down(int side) {
 
-  if (side == SIDE_BOTH || side == SIDE_LEFT) {
-    digitalWrite(mot_2_a, LOW);
-    digitalWrite(mot_2_b, HIGH);
-  }
-  if (side == SIDE_BOTH || side == SIDE_RIGHT) {
-    digitalWrite(mot_3_a, LOW);
-    digitalWrite(mot_3_b, HIGH);
-  }
-
-  delay(1000);
-
+  Serial.println("MOTOR DOWN");
+  
   digitalWrite(mot_2_a, LOW);
-  digitalWrite(mot_2_b, LOW);
-  digitalWrite(mot_3_a, LOW);
-  digitalWrite(mot_3_b, LOW);
+  digitalWrite(mot_2_b, (side == SIDE_BOTH || side == SIDE_LEFT) ? HIGH : LOW);
 
+  digitalWrite(mot_3_a, LOW);
+  digitalWrite(mot_3_b,  (side == SIDE_BOTH || side == SIDE_RIGHT) ? HIGH : LOW);
 }
 
 void motor_test() {
